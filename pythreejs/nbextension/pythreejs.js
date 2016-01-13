@@ -776,7 +776,48 @@ define(["nbextensions/widgets/widgets/js/widget", "nbextensions/widgets/widgets/
                                                     this.model.get('stacks')));
         }
     });
+
+
     register['ParametricGeometryView'] = ParametricGeometryView;
+
+    var ExtrudeGeometryView = ThreeView.extend({
+      update: function() {
+          var shape_array = this.model.get('shapes');
+          var shapes = shape_array.map(function (shp) {
+            var shape = new THREE.Shape();
+            var points = shp.get('points');
+            shape.moveTo(points[0][0], points[0][1]);
+
+            for ( var i = 1, l = points.length; i < l; i ++ ) {
+              shape.lineTo(points[i][0], points[i][1]);
+            }
+
+            shape.holes = shp.get('holes').map(function (hole_pts) {
+              var path = new THREE.Path();
+              path.moveTo(hole_pts[0][0], hole_pts[0][1]);
+
+              for ( var i = 1, l = hole_pts.length; i < l; i ++ ) {
+                path.lineTo(hole_pts[i][0], hole_pts[i][1]);
+              }
+
+              return path;
+            });
+
+            return shape;
+          });
+          var start = new THREE.Vector3().fromArray(this.model.get('extrudePath_start'));
+          var end = new THREE.Vector3().fromArray(this.model.get('extrudePath_end'));
+          var line = new THREE.LineCurve3(start, end);
+
+          extrude_settings = {
+            extrudePath: line
+          };
+
+          this.replace_obj(new THREE.ExtrudeGeometry(shapes, extrude_settings));
+      }
+    });
+
+    register['ExtrudeGeometryView'] = ExtrudeGeometryView;
     
     var MaterialView = ThreeView.extend({
         new_properties: function() {
@@ -1228,6 +1269,12 @@ define(["nbextensions/widgets/widgets/js/widget", "nbextensions/widgets/widgets/
             camera: {deserialize: widget.unpack_models},
             controls: {deserialize: widget.unpack_models},
             effect: {deserialize: widget.unpack_models},
+        }, widget.WidgetModel.serializers)
+    });
+
+    register.ExtrudeGeometryModel = widget.WidgetModel.extend({}, {
+        serializers: _.extend({
+            shapes: {deserialize: widget.unpack_models},
         }, widget.WidgetModel.serializers)
     });
 

@@ -20,15 +20,15 @@ except ImportError:  # IPython 3.x
 from math import pi, sqrt
 
 def vector3(trait_type=CFloat, default=None, **kwargs):
-    if default is None: 
+    if default is None:
         default=[0,0,0]
-    return List(trait_type, default_value=default, 
+    return List(trait_type, default_value=default,
                 minlen=3, maxlen=3, allow_none=False, **kwargs)
 
 def vector2(trait_type=CFloat, default=None, **kwargs):
-    if default is None: 
+    if default is None:
         default=[0,0]
-    return List(trait_type, default_value=default, 
+    return List(trait_type, default_value=default,
                 minlen=2, maxlen=2, allow_none=False, **kwargs)
 
 
@@ -84,7 +84,7 @@ class ImageTexture(Texture):
 class DataTexture(Texture):
     """A data-based texture.
 
-    See http://threejs.org/docs/#Reference/Textures/DataTexture.  
+    See http://threejs.org/docs/#Reference/Textures/DataTexture.
     """
     _view_name = Unicode('DataTextureView', sync=True)
     data = List(CInt, sync=True)
@@ -182,7 +182,7 @@ class Object3d(Widget):
             x[0] = x[0]/scalar
             x[1] = x[1]/scalar
             x[2] = x[2]/scalar
-        else: 
+        else:
             x[0] = 0
             x[1] = 0
             x[2] = 0
@@ -211,7 +211,7 @@ class Object3d(Widget):
         m.extend(y)
         m.extend(z)
         self.quaternion_from_rotation(m)
-        
+
 
 class ScaledObject(Object3d):
     """
@@ -221,6 +221,15 @@ class ScaledObject(Object3d):
     The idea is that it is the parent for objects you want to maintain the same scale.
     """
     _view_name = Unicode('ScaledObjectView', sync=True)
+
+class Path(Widget):
+    _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
+    _view_name = Unicode('PathView', sync=True)
+    points = List(vector2(CInt, sync=True), sync=True)
+
+class Shape(Path):
+    _view_name = Unicode('ShapeView', sync=True)
+    holes = List(List(vector2(CInt)), [], sync=True)
 
 class Controls(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
@@ -257,9 +266,9 @@ class Picker(Controls):
     faceVertices = List(vector3(), sync=True)
     faceIndex = CInt(sync=True)
     all = Bool(False, sync=True)
-    
+
 class Geometry(Widget):
-    _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)    
+    _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
     _view_name = Unicode('GeometryView', sync=True)
 
 class PlainGeometry(Geometry):
@@ -268,11 +277,11 @@ class PlainGeometry(Geometry):
     colors = List(Color, sync=True)
     faces = List(List(CFloat), sync=True)
     # todo: faceVertexUvs = List(vector3(vector2(CFloat)), sync=True)
-    
+
 class SphereGeometry(Geometry):
     _view_name = Unicode('SphereGeometryView', sync=True)
     radius = CFloat(1, sync=True)
-    
+
 class CylinderGeometry(Geometry):
     _view_name = Unicode('CylinderGeometryView', sync=True)
     radiusTop = CFloat(1, sync=True)
@@ -281,7 +290,7 @@ class CylinderGeometry(Geometry):
     radiusSegments = CFloat(20, sync=True)
     heightSegments = CFloat(1, sync=True)
     openEnded = Bool(False, sync=True)
-    
+
 class BoxGeometry(Geometry):
     _view_name = Unicode('BoxGeometryView', sync=True)
     width = CFloat(1, sync=True)
@@ -290,14 +299,14 @@ class BoxGeometry(Geometry):
     widthSegments = CFloat(1, sync=True)
     heightSegments = CFloat(1, sync=True)
     depthSegments = CFloat(1, sync=True)
-    
+
 class CircleGeometry(Geometry):
     _view_name = Unicode('CircleGeometryView', sync=True)
     radius = CFloat(1, sync=True)
     segments = CFloat(8, sync=True)
     thetaStart = CFloat(0, sync=True)
     thetaLength = CFloat(2*pi, sync=True)
-    
+
 class LatheGeometry(Geometry):
     _view_name = Unicode('LatheGeometryView', sync=True)
     points = List(vector3(), sync=True)
@@ -317,24 +326,24 @@ class IcosahedronGeometry(Geometry):
     _view_name = Unicode('IcosahedronGeometryView', sync=True)
     radius = CFloat(1, sync=True)
     detail = CFloat(0, sync=True)
-    
+
 class OctahedronGeometry(Geometry):
     _view_name = Unicode('OctahedronGeometryView', sync=True)
     radius = CFloat(1, sync=True)
     detail = CFloat(0, sync=True)
-    
+
 class PlaneGeometry(Geometry):
     _view_name = Unicode('PlaneGeometryView', sync=True)
     width = CFloat(1, sync=True)
     height = CFloat(1, sync=True)
     widthSegments = CFloat(1, sync=True)
     heightSegments = CFloat(1, sync=True)
-    
+
 class TetrahedronGeometry(Geometry):
     _view_name = Unicode('TetrahedronGeometryView', sync=True)
     radius = CFloat(1, sync=True)
     detail = CFloat(0, sync=True)
-    
+
 class TorusGeometry(Geometry):
     _view_name = Unicode('TorusGeometryView', sync=True)
     radius = CFloat(1, sync=True)
@@ -342,7 +351,7 @@ class TorusGeometry(Geometry):
     radialSegments = CFloat(1, sync=True)
     tubularSegments = CFloat(1, sync=True)
     arc = CFloat(pi*2, sync=True)
-    
+
 class TorusKnotGeometry(Geometry):
     _view_name = Unicode('TorusKnotGeometryView', sync=True)
     radius = CFloat(1, sync=True)
@@ -352,7 +361,7 @@ class TorusKnotGeometry(Geometry):
     p = CFloat(2, sync=True)
     q = CFloat(3, sync=True)
     heightScale = CFloat(1, sync=True)
-    
+
 class PolyhedronGeometry(Geometry):
     _view_name = Unicode('PolyhedronGeometryView', sync=True)
     radius = CFloat(1, sync=True)
@@ -395,32 +404,40 @@ class ParametricGeometry(Geometry):
     func = Unicode('', sync=True)
     slices = CInt(105, sync=True)
     stacks = CInt(105,sync=True)
-    
+
+class ExtrudeGeometry(Geometry):
+    _view_name = Unicode('ExtrudeGeometryView', sync=True)
+    _model_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
+    _model_name = Unicode('ExtrudeGeometryModel', sync=True)
+    shapes = List(Instance(Shape), sync=True, **widget_serialization)
+    extrudePath_start = vector3(CInt, sync=True)
+    extrudePath_end = vector3(CInt, sync=True)
+
 class Material(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
     _view_name = Unicode('MaterialView', sync=True)
     # id = TODO
-    name = Unicode('', sync=True) 
-    side = Enum(['FrontSide', 'BackSide', 'DoubleSide'], 'DoubleSide',  sync=True) 
+    name = Unicode('', sync=True)
+    side = Enum(['FrontSide', 'BackSide', 'DoubleSide'], 'DoubleSide',  sync=True)
     opacity = CFloat(1.0, sync=True)
     transparent = Bool(False, sync=True)
     blending = Enum(['NoBlending', 'NormalBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending',
-                    'CustomBlending'], 'NormalBlending', sync=True) 
+                    'CustomBlending'], 'NormalBlending', sync=True)
     blendSrc = Enum(['ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'SrcAlphaFactor',
-                    'OneMinusSrcAlphaFactor', 'DstAlphaFactor', 'OneMinusDstAlphaFactor'], 'SrcAlphaFactor', sync=True) 
+                    'OneMinusSrcAlphaFactor', 'DstAlphaFactor', 'OneMinusDstAlphaFactor'], 'SrcAlphaFactor', sync=True)
     blendDst = Enum(['DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor'], 'OneMinusDstColorFactor',
                     sync=True)
     blendEquation = Enum(['AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'], 'AddEquation', sync=True)
-    depthTest = Bool(True, sync=True) 
-    depthWrite = Bool(True, sync=True) 
-    polygonOffset = Bool(True, sync=True) 
-    polygonOffsetFactor = CFloat(1.0, sync=True) 
-    polygonOffsetUnits = CFloat(1.0, sync=True) 
-    alphaTest = CFloat(1.0, sync=True) 
-    overdraw = CFloat(1.0, sync=True) 
-    visible = Bool(True, sync=True) 
-    needsUpdate = Bool(True, sync=True) 
-    
+    depthTest = Bool(True, sync=True)
+    depthWrite = Bool(True, sync=True)
+    polygonOffset = Bool(True, sync=True)
+    polygonOffsetFactor = CFloat(1.0, sync=True)
+    polygonOffsetUnits = CFloat(1.0, sync=True)
+    alphaTest = CFloat(1.0, sync=True)
+    overdraw = CFloat(1.0, sync=True)
+    visible = Bool(True, sync=True)
+    needsUpdate = Bool(True, sync=True)
+
 class BasicMaterial(Material):
     _view_name = Unicode('BasicMaterialView', sync=True)
     _model_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
@@ -447,7 +464,7 @@ class LambertMaterial(BasicMaterial):
     reflectivity = CFloat(1.0, sync=True)
     refractionRatio = CFloat(0.98, sync=True)
     combine = Enum(['MultiplyOperation', 'MixOperation', 'AddOperation'], 'MultiplyOperation', sync=True)
-    
+
 class PhongMaterial(BasicMaterial):
     _view_name = Unicode('PhongMaterialView', sync=True)
     ambient = Color('white', sync=True)
@@ -457,7 +474,7 @@ class PhongMaterial(BasicMaterial):
     reflectivity = CFloat(1.0, sync=True)
     refractionRatio = CFloat(0.98, sync=True)
     combine = Enum(['MultiplyOperation', 'MixOperation', 'AddOperation'], 'MultiplyOperation', sync=True)
-    
+
 class DepthMaterial(Material):
     _view_name = Unicode('DepthMaterialView', sync=True)
     wireframe = Bool(False, sync=True)
@@ -466,14 +483,14 @@ class DepthMaterial(Material):
 class _LineMaterial(Material):
     """Abstract base class for line materials"""
     _view_name = None
-    
+
 class LineBasicMaterial(_LineMaterial):
     _view_name = Unicode('LineBasicMaterialView', sync=True)
     color = Color('white', sync=True)
     linewidth = CFloat(1.0, sync=True)
     linecap = Unicode('round', sync=True)
     linejoin = Unicode('round', sync=True)
-    fog = Bool(False, sync=True) 
+    fog = Bool(False, sync=True)
     vertexColors = Enum(['NoColors', 'FaceColors', 'VertexColors'], 'NoColors', sync=True)
 
 class LineDashedMaterial(_LineMaterial):
@@ -554,7 +571,7 @@ class Line(Mesh):
     _view_name = Unicode('LineView', sync=True)
     type = Enum(['LineStrip', 'LinePieces'], 'LineStrip', sync=True)
     material = Instance(_LineMaterial, sync=True, **widget_serialization)
-    
+
 class PlotMesh(Mesh):
     plot = Instance('sage.plot.plot3d.base.Graphics3d')
 
@@ -563,16 +580,16 @@ class PlotMesh(Mesh):
         if (self.type == 'object'):
             self.type = new.scenetree_json()['geometry']['type']
             self.material = self.material_from_object(new)
-        else: 
+        else:
             self.type = new.scenetree_json()['children'][0]['geometry']['type']
             self.material = self.material_from_other(new)
-        if(self.type == 'index_face_set'): 
+        if(self.type == 'index_face_set'):
             self.geometry = self.geometry_from_plot(new)
         elif(self.type == 'sphere'):
             self.geometry = self.geometry_from_sphere(new)
         elif(self.type == 'box'):
             self.geometry = self.geometry_from_box(new)
-        
+
 
     def material_from_object(self, p):
         # TODO: do this without scenetree_json()
@@ -637,10 +654,10 @@ class OrthographicCamera(Camera):
     bottom = CFloat(10.0, sync=True)
     near = CFloat(0.1, sync=True)
     far = CFloat(2000.0, sync=True)
-    
+
 class Scene(Object3d):
     _view_name = Unicode('SceneView', sync=True)
-    
+
 class Effect(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
 
@@ -730,7 +747,7 @@ def height_texture(z, colormap = 'YlGnBu_r'):
     from matplotlib import cm
     from skimage import img_as_ubyte
     import numpy as np
-    
+
     colormap = cm.get_cmap(colormap)
     im = z.copy()
     # rescale to be in [0,1], scale nan to be the smallest value
