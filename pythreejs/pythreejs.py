@@ -47,7 +47,7 @@ class Color(TraitType):
     This takes a color represented as:
 
     * a string of the form ``'rgb(255, 0, 0)'``, ``'rgb(100%, 0%, 0%)'``, ``'#ff0000'``, ``'#f00'``, or a color name (see the THREE.ColorKeywords listing at https://github.com/mrdoob/three.js/blob/master/src/math/Color.js)
-    * an rgb tuple/list of numbers, each between 0 and 1
+    * an rgb tuple/list of numbers, each between 0 and 256
     * an integer (or hex value)
     """
     default_value = 'black'
@@ -222,14 +222,21 @@ class ScaledObject(Object3d):
     """
     _view_name = Unicode('ScaledObjectView', sync=True)
 
+class LineCurve3(Widget):
+    _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
+    _view_name = Unicode('LineCurve3View', sync=True)
+    start = vector3(CFloat, sync=True)
+    end = vector3(CFloat, sync=True)
+
+
 class Path(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
     _view_name = Unicode('PathView', sync=True)
-    points = List(vector2(CInt, sync=True), sync=True)
+    points = List(vector2(CFloat, sync=True), sync=True)
 
 class Shape(Path):
     _view_name = Unicode('ShapeView', sync=True)
-    holes = List(List(vector2(CInt)), [], sync=True)
+    holes = List(List(vector2(CFloat)), [], sync=True)
 
 class Controls(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
@@ -410,8 +417,7 @@ class ExtrudeGeometry(Geometry):
     _model_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)
     _model_name = Unicode('ExtrudeGeometryModel', sync=True)
     shapes = List(Instance(Shape), sync=True, **widget_serialization)
-    extrudePath_start = vector3(CInt, sync=True)
-    extrudePath_end = vector3(CInt, sync=True)
+    extrudePath = Instance(LineCurve3, sync=True, **widget_serialization)
 
 class Material(Widget):
     _view_module = Unicode('nbextensions/pythreejs/pythreejs', sync=True)

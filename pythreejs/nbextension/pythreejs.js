@@ -805,8 +805,9 @@ define(["nbextensions/widgets/widgets/js/widget", "nbextensions/widgets/widgets/
 
             return shape;
           });
-          var start = new THREE.Vector3().fromArray(this.model.get('extrudePath_start'));
-          var end = new THREE.Vector3().fromArray(this.model.get('extrudePath_end'));
+          var path_model = this.model.get('extrudePath');
+          var start = new THREE.Vector3().fromArray(path_model.get('start'));
+          var end = new THREE.Vector3().fromArray(path_model.get('end'));
           var line = new THREE.LineCurve3(start, end);
 
           extrude_settings = {
@@ -1275,6 +1276,7 @@ define(["nbextensions/widgets/widgets/js/widget", "nbextensions/widgets/widgets/
     register.ExtrudeGeometryModel = widget.WidgetModel.extend({}, {
         serializers: _.extend({
             shapes: {deserialize: widget.unpack_models},
+            extrudePath: {deserialize: widget.unpack_models},
         }, widget.WidgetModel.serializers)
     });
 
